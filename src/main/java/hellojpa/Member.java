@@ -5,35 +5,26 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
 
 @Entity
 @Getter
 @Setter
+@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq")
 public class Member {
-    @Id
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
     private Long id;
-    @Column(name = "name")
-    private String name;
 
-    @Enumerated(EnumType.STRING)
-    private RoleType roleType;
+    @Column(name = "USERNAME")
+    private String username;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDats;
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiredDate;
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
 
-    @Lob
-    private String description;
-
-    @Transient
-    private int tmp;
-
-    public Member(long l, String a1) {
-        this.id = l;
-        this.name = a1;
-    }
-
-    public Member() {}
 }
