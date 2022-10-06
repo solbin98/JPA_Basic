@@ -1,6 +1,11 @@
 package hellojpa;
 
+import org.hibernate.Criteria;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class JpaMain {
@@ -12,20 +17,15 @@ public class JpaMain {
 
         tx.begin();
 
-        Member member = new Member();
-        member.setUsername("member1");
-        member.setHomeAddress(new Address("homeCity", "street", "ddd"));
+        //Criteria
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Member> query = cb.createQuery(Member.class);
+        Root<Member> m = query.from(Member.class);
 
-        member.getFavoriteFoods().add("치킨");
-        member.getFavoriteFoods().add("족발");
-        member.getFavoriteFoods().add("피자");
+        query.select(m).where(cb.equal(m.get("username"), "kim"));
+        CriteriaQuery<Member> cq = query.select(m);
 
-        member.getAddressList().add(new Address("old1", "street", "ddd"));
-        member.getAddressList().add(new Address("old2", "street", "ddd"));
-
-        em.persist(member);
-        tx.commit();
-
+        List<Member> resultList = em.createQuery(cq).getResultList();
         //code
         em.close();
         emf.close();
